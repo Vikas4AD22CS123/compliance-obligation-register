@@ -1,0 +1,32 @@
+from flask import Flask, jsonify
+from flask_cors import CORS
+
+from routes.describe import describe_bp
+from routes.recommend import recommend_bp
+
+
+def create_app():
+    # Create the Flask app
+    app = Flask(__name__)
+
+    # Allow requests from the frontend during development
+    CORS(app)
+
+    # Register route blueprints
+    app.register_blueprint(describe_bp)
+    app.register_blueprint(recommend_bp)
+
+    @app.route("/health", methods=["GET"])
+    def health():
+        # Simple endpoint to check if the service is running
+        return jsonify({"status": "ok"})
+
+    return app
+
+
+app = create_app()
+
+
+if __name__ == "__main__":
+    # Start the app in debug mode for local development
+    app.run(debug=True)
