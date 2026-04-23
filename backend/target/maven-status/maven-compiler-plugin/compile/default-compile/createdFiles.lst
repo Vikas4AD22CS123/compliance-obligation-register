@@ -1,2 +1,4 @@
 com\internship\tool\controller\TestController.class
+com\internship\tool\config\JpaConfig.class
+com\internship\tool\entity\Compliance.class
 com\internship\tool\ToolApplication.class
