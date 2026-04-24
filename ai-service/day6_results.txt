@@ -1,0 +1,69 @@
+Q1: What are tax rules?
+
+Answer: Tax rules are regulations that govern how taxes are paid and reported. The company must follow these regulations.
+
+Accuracy: 8.5/10
+Format: 8/10
+
+Q2: Explain compliance requirements
+
+Answer: Company must follow tax rules. This means obeying tax laws and regulations.
+
+Accuracy: 8/10
+Format: 8/10
+
+Q3: Company must follow laws
+
+Answer: This includes tax regulations. Company must follow these rules to be in compliance.
+
+Accuracy: 7.5/10
+Format: 7/10
+
+Q4: What is financial regulation?
+
+Answer: Financial regulation refers to the rules and laws that govern financial activities.
+
+Accuracy: 8/10
+Format: 8.5/10
+
+Q5: Rules for employee safety
+
+Answer: Not found in context, the given information only mentions tax regulations.
+
+Accuracy: 9/10
+Format: 8/10
+
+Q6: Data protection laws
+
+Answer: Data protection laws are not mentioned as a requirement for the company. The focus is on tax regulations.
+
+Accuracy: 9/10
+Format: 8/10
+
+Q7: Environmental compliance rules
+
+Answer: Not found in context. The given information only mentions tax regulations.
+
+Accuracy: 9/10
+Format: 8.5/10
+
+Q8: What are audit requirements?
+
+Answer: Audit requirements are necessary to ensure compliance with tax regulations.
+
+Accuracy: 7/10
+Format: 8/10
+
+Q9: Legal obligations of company
+
+Answer: The company must follow tax regulations.
+
+Accuracy: 8.5/10
+Format: 9/10
+
+Q10: What is corporate governance?
+
+Answer: Not found in context.
+
+Accuracy: 9/10
+Format: 9/10

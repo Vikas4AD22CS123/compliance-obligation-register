@@ -24,16 +24,21 @@ def query():
     context = "\n".join(docs)
 
     prompt = f"""
-    Answer the question using ONLY the context below.
+You are a compliance assistant.
 
-    Context:
-    {context}
+Answer the question using the context below.
+- Keep answer short (1–2 lines)
+- Use simple and complete sentences
+- Only answer if clearly supported by context
+- If not clearly supported, say "Not found in context"
+- Do not guess or assume
 
-    Question:
-    {question}
+Context:
+{context}
 
-    Give clear answer.
-    """
+Question:
+{question}
+"""
 
     # 🤖 Step 3: Call Groq
     answer = groq.generate([
