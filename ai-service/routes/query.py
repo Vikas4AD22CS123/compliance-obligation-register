@@ -1,3 +1,5 @@
+import time
+from routes.health import response_times
 from flask import Blueprint, request, jsonify
 from services.chroma_client import ChromaClient
 from services.groq_client import GroqClient
@@ -9,6 +11,8 @@ groq = GroqClient()
 
 @query_bp.route("/query", methods=["POST"])
 def query():
+    start = time.time()   # ⏱️ START
+
     data = request.get_json()
 
     if not data or "question" not in data:
@@ -18,7 +22,7 @@ def query():
 
     # 🔍 Step 1: Search top 3 docs
     results = chroma.query([question])
-    docs = results["documents"][0]  # list of docs
+    docs = results["documents"][0]
 
     # 🧠 Step 2: Create prompt
     context = "\n".join(docs)
@@ -45,7 +49,20 @@ Question:
         {"role": "user", "content": prompt}
     ])
 
+    # ⏱️ END timing
+    end = time.time()
+    response_times.append(end - start)
+
+    if len(response_times) > 10:
+        response_times.pop(0)
+
     # 📤 Step 4: Return
+    if answer.strip().lower().startswith("not found"):
+        return jsonify({
+            "answer": answer,
+            "sources": []
+        })
+
     return jsonify({
         "answer": answer,
         "sources": docs
