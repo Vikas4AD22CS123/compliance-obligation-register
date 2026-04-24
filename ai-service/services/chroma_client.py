@@ -2,11 +2,7 @@ import chromadb
 
 class ChromaClient:
     def __init__(self):
-        self.client = chromadb.Client(
-            chromadb.config.Settings(
-                persist_directory="./chroma_data"
-            )
-        )
+        self.client = chromadb.PersistentClient(path="./chroma_data")
 
         self.collection = self.client.get_or_create_collection(
             name="compliance_docs"
@@ -20,7 +16,7 @@ class ChromaClient:
 
     def query(self, query_text):
         results = self.collection.query(
-            query_texts=[query_text],
-            n_results=1
+            query_texts=query_text,
+            n_results=3
         )
         return results
