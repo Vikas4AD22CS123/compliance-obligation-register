@@ -1,3 +1,4 @@
+import services.cache as cache
 from flask import Blueprint, jsonify
 import time
 from services.chroma_client import ChromaClient
@@ -24,5 +25,8 @@ def health():
         "avg_response_time": round(avg_time, 3),
         "chroma_docs": count,
         "uptime_seconds": round(uptime, 2),
-        "cache": "not implemented"
+        "cache": {
+    "hits": cache.cache_hits,
+    "misses": cache.cache_misses
+}
     })
