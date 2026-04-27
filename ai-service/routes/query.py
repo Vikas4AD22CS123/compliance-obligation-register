@@ -25,6 +25,7 @@ def query():
     cache_key = get_cache_key(question)
     cached = get_from_cache(cache_key)
     if cached:
+        cached["meta"]["cached"] = True
         return jsonify(cached)
 
     # Step 1: Search docs
@@ -56,15 +57,23 @@ Question:
     # TIME TRACKING
     end = time.time()
     response_times.append(end - start)
+    response_time_ms = int((end - start) * 1000)
 
     if len(response_times) > 10:
         response_times.pop(0)
 
     # RESPONSE
     response = {
-        "answer": answer,
-        "sources": [] if answer.strip().lower().startswith("not found") else docs
+    "answer": answer,
+    "sources": [] if answer.strip().lower().startswith("not found") else docs,
+    "meta": {
+        "confidence": 0.8,
+        "model_used": "llama3-8b",
+        "tokens_used": len(answer.split()),
+        "response_time_ms": response_time_ms,
+        "cached": False
     }
+}
 
     # CACHE SAVE
     set_cache(cache_key, response)
