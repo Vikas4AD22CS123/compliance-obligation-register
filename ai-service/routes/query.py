@@ -21,17 +21,17 @@ def query():
 
     question = data["question"]
 
-    # ✅ CACHE CHECK
+    # CACHE CHECK
     cache_key = get_cache_key(question)
     cached = get_from_cache(cache_key)
     if cached:
         return jsonify(cached)
 
-    # 🔍 Step 1: Search docs
+    # Step 1: Search docs
     results = chroma.query([question])
     docs = results["documents"][0]
 
-    # 🧠 Step 2: Prompt
+    # Step 2: Prompt
     context = "\n".join(docs)
 
     prompt = f"""
@@ -48,25 +48,25 @@ Question:
 {question}
 """
 
-    # 🤖 Step 3: LLM
+    # Step 3: LLM
     answer = groq.generate([
         {"role": "user", "content": prompt}
     ])
 
-    # ⏱️ TIME TRACKING
+    # TIME TRACKING
     end = time.time()
     response_times.append(end - start)
 
     if len(response_times) > 10:
         response_times.pop(0)
 
-    # 📤 RESPONSE
+    # RESPONSE
     response = {
         "answer": answer,
         "sources": [] if answer.strip().lower().startswith("not found") else docs
     }
 
-    # ✅ CACHE SAVE
+    # CACHE SAVE
     set_cache(cache_key, response)
 
     return jsonify(response)
