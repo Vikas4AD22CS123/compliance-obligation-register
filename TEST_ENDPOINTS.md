@@ -160,3 +160,104 @@ source.onerror = function(event) {
 ✅ **Error Handling** - Both endpoints handle errors gracefully  
 ✅ **Time Delays** - Each line has a 0.5-1 second delay for demo effect  
 
+---
+
+## **Day 9 Task - POST /analyse-document**
+
+### **PowerShell Test Command:**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"text":"Policy audit training security violation found"}'
+```
+
+### **Using curl:**
+```bash
+curl -X POST http://127.0.0.1:5000/analyse-document \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Policy audit training security violation found"}'
+```
+
+### **Expected Response:**
+```json
+{
+  "status": "success",
+  "findings": [
+    {
+      "type": "Insight",
+      "title": "Policy Gap Found",
+      "description": "Compliance policy references detected and may need review.",
+      "risk_level": "Medium"
+    },
+    {
+      "type": "Insight",
+      "title": "Audit Reference Found",
+      "description": "Audit-related content detected that may require follow-up.",
+      "risk_level": "Medium"
+    },
+    {
+      "type": "Recommendation",
+      "title": "Training Needed",
+      "description": "Employee training is recommended based on document content.",
+      "risk_level": "Low"
+    },
+    {
+      "type": "Risk",
+      "title": "Security Concern",
+      "description": "Security-related issues detected in the provided text.",
+      "risk_level": "High"
+    },
+    {
+      "type": "Risk",
+      "title": "Compliance Violation",
+      "description": "Potential compliance violation detected in the document.",
+      "risk_level": "High"
+    }
+  ]
+}
+```
+
+### **Test with Different Keywords:**
+
+#### **Test 1: Risk and Security**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"text":"High risk security breach detected"}'
+```
+
+#### **Test 2: Training Only**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"text":"Employee training program needs update"}'
+```
+
+#### **Test 3: No Keywords**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"text":"This is a regular document with no compliance keywords"}'
+```
+
+### **Error Testing:**
+
+#### **Test 4: Missing Text Field**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"content":"some text"}'
+```
+
+#### **Test 5: Empty Text**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"text":""}'
+```
+
+#### **Test 6: Invalid JSON**
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:5000/analyse-document" -Method POST -Headers @{"Content-Type"="application/json"} -Body 'invalid json'
+```
+
+---
+
+## **Keywords Detected:**
+- **policy** → Insight: Policy Gap Found (Medium risk)
+- **risk** → Risk: Risk Assessment Required (High risk)  
+- **training** → Recommendation: Training Needed (Low risk)
+- **audit** → Insight: Audit Reference Found (Medium risk)
+- **security** → Risk: Security Concern (High risk)
+- **violation** → Risk: Compliance Violation (High risk)
+
+**No keywords found** → Default: Document Analyzed (Low risk)  
+
