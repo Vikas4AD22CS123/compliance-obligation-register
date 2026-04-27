@@ -53,3 +53,13 @@ Final average score: **5/5**
 - Data quality is more important than prompt
 - Definition-based context improves retrieval
 - Caching improves performance
+
+## Day 11 - Async Report Generation
+
+Implemented asynchronous report generation using background threads.
+
+- POST /generate-report → returns job_id immediately
+- GET /report-status/<job_id> → returns job status and result
+
+This avoids blocking requests and improves performance.
+  
