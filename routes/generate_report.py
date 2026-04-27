@@ -1,5 +1,6 @@
 # Flask Blueprint for generating compliance reports
-from flask import Blueprint, request, jsonify
+import time
+from flask import Blueprint, request, jsonify, Response, stream_with_context
 
 # Create a Blueprint named report_bp
 report_bp = Blueprint('report_bp', __name__)
@@ -61,6 +62,139 @@ def generate_report():
         return jsonify({
             "error": f"An error occurred: {str(e)}"
         }), 500
+
+
+@report_bp.route('/generate-report-stream', methods=['GET'])
+def generate_report_stream():
+    """
+    GET /generate-report-stream endpoint
+    
+    Uses Server-Sent Events (SSE) to stream a compliance report line by line.
+    The frontend can receive real-time updates as the report is generated.
+    
+    Query parameter:
+    - text: The compliance issue details to analyze
+    
+    Example:
+    GET /generate-report-stream?text=Company has missing compliance policies
+    
+    Frontend usage:
+    const source = new EventSource("http://127.0.0.1:5000/generate-report-stream?text=test");
+    source.onmessage = function(event) {
+        console.log(event.data);
+    };
+    """
+    
+    try:
+        # Step 1: Get the text query parameter
+        text = request.args.get('text', '').strip()
+        
+        # Step 2: Validate that text parameter is not empty
+        if not text:
+            # Return error as a stream format
+            return Response(
+                stream_with_context(
+                    stream_error_message("Error: Missing 'text' query parameter")
+                ),
+                mimetype='text/event-stream'
+            ), 400
+        
+        # Step 3: Create the streaming response with the generator function
+        # stream_with_context preserves the Flask application context
+        return Response(
+            stream_with_context(generate_report_stream_content(text)),
+            mimetype='text/event-stream'
+        )
+    
+    except Exception as e:
+        # Step 4: Handle any unexpected errors
+        return Response(
+            stream_with_context(
+                stream_error_message(f"Error: {str(e)}")
+            ),
+            mimetype='text/event-stream'
+        ), 500
+
+
+def generate_report_stream_content(text):
+    """
+    Generator function that streams report content line by line.
+    
+    This function yields lines in Server-Sent Events (SSE) format.
+    Each line is prefixed with "data: " to be compatible with EventSource API.
+    
+    Args:
+        text (str): The compliance issue details
+        
+    Yields:
+        str: Each line of the report in SSE format
+    """
+    
+    try:
+        # Step 1: Stream initial message
+        yield f"data: Generating Compliance Report...\n\n"
+        time.sleep(1)
+        
+        # Step 2: Stream the title
+        yield f"data: Title: Compliance Risk Report\n\n"
+        time.sleep(1)
+        
+        # Step 3: Stream the executive summary
+        summary_text = text[:100]
+        yield f"data: Executive Summary: Compliance assessment for {summary_text}. This issue requires immediate attention and proper documentation.\n\n"
+        time.sleep(1)
+        
+        # Step 4: Stream the overview
+        yield f"data: Overview: Detailed compliance review based on submitted issue: '{text}'. The organization must ensure full adherence to regulatory requirements and internal policies.\n\n"
+        time.sleep(1)
+        
+        # Step 5: Stream the top items header
+        yield f"data: Top Items:\n\n"
+        time.sleep(0.5)
+        
+        # Step 6: Stream each top item
+        top_items = [
+            "Policy gaps identified",
+            "Training required",
+            "Audit pending"
+        ]
+        for item in top_items:
+            yield f"data: - {item}\n\n"
+            time.sleep(0.5)
+        
+        # Step 7: Stream the recommendations header
+        yield f"data: Recommendations:\n\n"
+        time.sleep(0.5)
+        
+        # Step 8: Stream each recommendation
+        recommendations = [
+            "Update compliance policies",
+            "Conduct employee training",
+            "Perform regular audits"
+        ]
+        for rec in recommendations:
+            yield f"data: - {rec}\n\n"
+            time.sleep(0.5)
+        
+        # Step 9: Stream completion message
+        yield f"data: Report Completed\n\n"
+        
+    except Exception as e:
+        # Handle errors during streaming
+        yield f"data: Error generating report: {str(e)}\n\n"
+
+
+def stream_error_message(message):
+    """
+    Helper function to stream an error message in SSE format.
+    
+    Args:
+        message (str): The error message to stream
+        
+    Yields:
+        str: Error message in SSE format
+    """
+    yield f"data: {message}\n\n"
 
 
 def generate_dummy_report(text):
