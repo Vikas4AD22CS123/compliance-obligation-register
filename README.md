@@ -1,56 +1,73 @@
-\# Compliance Obligation Register (AI Service)
+# Compliance Obligation Register (AI Service)
 
+## Overview
+This project is a Retrieval-Augmented Generation (RAG) based AI system that answers compliance-related questions using stored documents.
 
+---
 
-\## Overview
+## Features
+- RAG-based question answering
+- ChromaDB for document retrieval
+- Groq LLM (llama3-8b)
+- Response caching (TTL, hit/miss tracking)
+- Health monitoring endpoint
+- Meta response (confidence, tokens, latency, cache flag)
+- Async report generation using background processing
 
-RAG-based system for answering compliance questions.
+---
 
+## API Endpoints
 
+### POST /query
+- Input: question  
+- Output: answer + sources + meta  
 
-\## Features
+### GET /health
+- Model info  
+- Avg response time  
+- Cache stats  
+- Uptime  
 
-\- ChromaDB retrieval
+### POST /generate-report
+- Returns `job_id` immediately  
+- Starts background processing  
 
-\- Groq LLM (llama3-8b)
+### GET /report-status/<job_id>
+- Returns job status and result  
 
-\- Cache (TTL + hit/miss)
+---
 
-\- Health endpoint
+## Evaluation (Day 10/11)
+Tested with 10 different queries.
 
-\- Meta response
+Initial accuracy was low due to limited data.
 
-\- Async report generation
+After adding definition-based context, system performance improved significantly.
 
+Final average score: **5/5**
 
+---
 
-\## API
+## Async Processing (Day 11)
+Implemented asynchronous report generation:
 
+- Non-blocking API response
+- Background thread execution
+- Job tracking using `job_id`
+- Status endpoint to fetch results
 
+---
 
-POST /query  
+## Tech Stack
+- Python (Flask)
+- ChromaDB
+- Groq API
+- Redis (for caching logic)
 
-GET /health  
+---
 
-POST /generate-report  
-
-GET /report-status/<job\_id>
-
-
-
-\## Testing
-
-10 queries tested → average score: 5/5
-
-
-
-\## Day 11
-
-Async processing with background thread + job\_id tracking
-
-
-
-\## Tech
-
-Flask, ChromaDB, Groq
-
+## Key Learnings
+- Data quality improves retrieval accuracy
+- Definition-based context improves answers
+- Caching reduces response time
+- Async APIs improve system performance
