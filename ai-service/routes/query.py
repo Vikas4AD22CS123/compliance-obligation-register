@@ -49,10 +49,16 @@ Question:
 {question}
 """
 
-    # Step 3: LLM
-    answer = groq.generate([
-        {"role": "user", "content": prompt}
-    ])
+    # Step 3: LLM (with fallback)
+    try:
+        answer = groq.generate([
+            {"role": "user", "content": prompt}
+        ])
+        is_fallback = False
+
+    except Exception:
+        answer = "Unable to generate answer at the moment. Please try again later."
+        is_fallback = True
 
     # TIME TRACKING
     end = time.time()
@@ -64,16 +70,17 @@ Question:
 
     # RESPONSE
     response = {
-    "answer": answer,
-    "sources": [] if answer.strip().lower().startswith("not found") else docs,
-    "meta": {
-        "confidence": 0.8,
-        "model_used": "llama3-8b",
-        "tokens_used": len(answer.split()),
-        "response_time_ms": response_time_ms,
-        "cached": False
+        "answer": answer,
+        "sources": [] if answer.strip().lower().startswith("not found") else docs,
+        "meta": {
+            "confidence": 0.8,
+            "model_used": "llama3-8b",
+            "tokens_used": len(answer.split()),
+            "response_time_ms": response_time_ms,
+            "cached": False,
+            "is_fallback": is_fallback
+        }
     }
-}
 
     # CACHE SAVE
     set_cache(cache_key, response)
