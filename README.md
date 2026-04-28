@@ -71,3 +71,19 @@ Implemented asynchronous report generation:
 - Definition-based context improves answers
 - Caching reduces response time
 - Async APIs improve system performance
+
+## Performance Benchmark (Day 12)
+
+Tested with 50 requests per endpoint.
+
+/query:
+- p50: ~4 ms
+- p95: ~2526 ms
+- p99: ~2616 ms
+
+Observation:
+- Low p50 due to caching and quick responses
+- Higher p95/p99 due to LLM processing time
+
+Optimization:
+- Caching reduces repeated query latency significantly
