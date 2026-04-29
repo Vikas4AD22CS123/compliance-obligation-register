@@ -1,6 +1,7 @@
 package com.internship.tool.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;          // ✅ CHANGED
 import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -25,7 +26,8 @@ public class Compliance {
 
     private String status;
 
-    private LocalDateTime dueDate;
+    // ✅ FIXED HERE
+    private LocalDate dueDate;
 
     private Double riskScore;
 
@@ -52,8 +54,11 @@ public class Compliance {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
-    public LocalDateTime getDueDate() { return dueDate; }
-    public void setDueDate(LocalDateTime dueDate) { this.dueDate = dueDate; }
+    // ✅ FIXED GETTER
+    public LocalDate getDueDate() { return dueDate; }
+
+    // ✅ FIXED SETTER
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
 
     public Double getRiskScore() { return riskScore; }
     public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }

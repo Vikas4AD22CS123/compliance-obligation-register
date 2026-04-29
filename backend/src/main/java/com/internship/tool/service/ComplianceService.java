@@ -17,24 +17,38 @@ import java.util.List;
 public class ComplianceService {
 
     private final ComplianceRepository repository;
+    private final EmailService emailService;
 
-    public ComplianceService(ComplianceRepository repository) {
+    // ✅ Constructor
+    public ComplianceService(ComplianceRepository repository,
+                             EmailService emailService) {
         this.repository = repository;
+        this.emailService = emailService;
     }
 
-    // ✅ CREATE (Clear cache)
+    // ✅ CREATE (Clear cache + Send Email)
     @CacheEvict(value = "compliance", allEntries = true)
     public Compliance createCompliance(Compliance compliance) {
-        return repository.save(compliance);
+
+        Compliance saved = repository.save(compliance);
+
+        // 📧 Send Email
+        emailService.sendComplianceEmail(
+                "your_email@gmail.com", // ⚠️ change this
+                saved.getTitle(),
+                "New compliance created: " + saved.getDescription()
+        );
+
+        return saved;
     }
 
-    // ✅ GET ALL (Normal - optional)
+    // ✅ GET ALL
     public List<Compliance> getAllCompliance() {
         return repository.findAll();
     }
 
-    // ✅ GET ALL PAGINATED (Cached)
-    @Cacheable(value = "compliance", key = "'all_'+#pageable.pageNumber")
+    // ✅ GET PAGINATED (Cached)
+    @Cacheable(value = "compliance", key = "'page_'+#pageable.pageNumber")
     public Page<Compliance> getAllPaginated(Pageable pageable) {
         return repository.findAll(pageable);
     }
@@ -44,7 +58,8 @@ public class ComplianceService {
     public Compliance getComplianceById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Compliance not found with id: " + id));
+                        new ResourceNotFoundException(
+                                "Compliance not found with id: " + id));
     }
 
     // ✅ UPDATE (Clear cache)
@@ -60,7 +75,16 @@ public class ComplianceService {
         existing.setDueDate(updated.getDueDate());
         existing.setRiskScore(updated.getRiskScore());
 
-        return repository.save(existing);
+        Compliance saved = repository.save(existing);
+
+        // 📧 Optional: Send update email
+        emailService.sendComplianceEmail(
+                "your_email@gmail.com",
+                saved.getTitle(),
+                "Compliance updated"
+        );
+
+        return saved;
     }
 
     // ✅ DELETE (Clear cache)

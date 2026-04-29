@@ -1,67 +1,89 @@
 # =========================
+
 # Maven / Build Files
+
 # =========================
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 
-# Ignore all jar/war files (build outputs)
+# Ignore packaged files
+
 *.jar
 *.war
 *.ear
 
 # =========================
+
 # Logs
+
 # =========================
+
 logs/
 *.log
 
 # =========================
+
 # OS Files
+
 # =========================
+
 .DS_Store
 Thumbs.db
 
 # =========================
+
 # IDE Files
+
 # =========================
 
 # IntelliJ IDEA
+
 .idea/
 *.iml
 
 # Eclipse
+
 .project
 .classpath
 .settings/
 
 # VS Code
+
 .vscode/
 
 # =========================
+
 # Java Compiled Files
+
 # =========================
+
 *.class
 
 # =========================
+
 # Temporary Files
+
 # =========================
+
 *.tmp
 *.swp
 *~
 
 # =========================
+
 # Environment / Secrets
+
 # =========================
+
 .env
 
-# Spring Boot Config (optional - only if sensitive)
-# Comment this if you WANT to push config
-application.properties
-application.yml
+# =========================
+
+# Node (if frontend exists)
 
 # =========================
-# Node (if frontend exists)
-# =========================
+
 node_modules/
 dist/
 build/
