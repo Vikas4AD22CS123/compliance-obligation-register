@@ -99,3 +99,11 @@ Results:
 - System behaves consistently
 
 System is demo-ready.
+
+## Day 15 — Packaging
+
+- Created requirements.txt with dependencies
+- Added .env.example for environment variables
+- Added Dockerfile for containerization
+
+Note: Dockerfile included but Docker not executed locally.
