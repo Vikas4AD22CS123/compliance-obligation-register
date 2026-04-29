@@ -3,6 +3,7 @@ package com.internship.tool.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.LocalDate;
 
 public class ComplianceDTO {
 
@@ -20,6 +21,8 @@ public class ComplianceDTO {
     @NotNull(message = "Risk score is required")
     private Double riskScore;
 
+    private LocalDate dueDate;
+
     // Getters & Setters
 
     public String getTitle() { return title; }
@@ -36,4 +39,7 @@ public class ComplianceDTO {
 
     public Double getRiskScore() { return riskScore; }
     public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
+
+    public LocalDate getDueDate() { return dueDate; }
+    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
 }

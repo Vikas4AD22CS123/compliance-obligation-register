@@ -17,11 +17,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
   mail:
     host: smtp.gmail.com
     port: 587
-    username: janavihgowda.brigade@gmail.com
-    password: innmdxfbuakfhdyv
+    username: ${MAIL_USER}
+    password: ${MAIL_PASS}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true

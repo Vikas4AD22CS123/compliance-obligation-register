@@ -5,6 +5,7 @@ import com.internship.tool.entity.Compliance;
 import com.internship.tool.service.ComplianceService;
 
 import jakarta.validation.Valid;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ComplianceController {
         this.service = service;
     }
 
-    
+    // ✅ DTO → Entity Mapping
     private Compliance mapToEntity(ComplianceDTO dto) {
         Compliance c = new Compliance();
         c.setTitle(dto.getTitle());
@@ -29,46 +30,58 @@ public class ComplianceController {
         c.setCategory(dto.getCategory());
         c.setStatus(dto.getStatus());
         c.setRiskScore(dto.getRiskScore());
+        c.setDueDate(dto.getDueDate());
         return c;
     }
 
-   
+    // ✅ CREATE
+    @PostMapping("/create")
+    public ResponseEntity<Compliance> create(
+            @Valid @RequestBody ComplianceDTO dto) {
+
+        Compliance saved = service.createCompliance(mapToEntity(dto));
+
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(saved);
+    }
+
+    // ✅ GET ALL (PAGINATED)
     @GetMapping("/all")
     public ResponseEntity<Page<Compliance>> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        Page<Compliance> data = service.getAllPaginated(PageRequest.of(page, size));
+            @RequestParam(defaultValue = "5") int size) {
+
+        Page<Compliance> data =
+                service.getAllPaginated(PageRequest.of(page, size));
+
         return ResponseEntity.ok(data);
     }
 
-    
+    // ✅ GET BY ID
     @GetMapping("/{id}")
     public ResponseEntity<Compliance> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getComplianceById(id));
-    }
-
-    
-    @PostMapping("/create")
-    public ResponseEntity<Compliance> create(@Valid @RequestBody ComplianceDTO dto) {
-        Compliance saved = service.createCompliance(mapToEntity(dto));
-        return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
     // ✅ UPDATE
     @PutMapping("/{id}")
     public ResponseEntity<Compliance> update(
             @PathVariable Long id,
-            @Valid @RequestBody ComplianceDTO dto
-    ) {
-        Compliance updated = service.updateCompliance(id, mapToEntity(dto));
+            @Valid @RequestBody ComplianceDTO dto) {
+
+        Compliance updated =
+                service.updateCompliance(id, mapToEntity(dto));
+
         return ResponseEntity.ok(updated);
     }
 
     // ✅ DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
+
         service.deleteCompliance(id);
+
         return ResponseEntity.ok("Deleted successfully");
     }
 }
