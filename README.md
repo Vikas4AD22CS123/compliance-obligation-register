@@ -87,3 +87,15 @@ Observation:
 
 Optimization:
 - Caching reduces repeated query latency significantly
+
+## Final Prompt QA (Day 14)
+
+Tested system with multiple prompts against demo data.
+
+Results:
+- Correct answers returned for known queries
+- Relevant sources retrieved
+- No “Not found in context” for valid questions
+- System behaves consistently
+
+System is demo-ready.
