@@ -27,8 +27,12 @@ spring:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
 
-  flyway:
-    enabled: false
+file:
+  upload-dir: uploads
+  max-size: 10MB
+
+flyway:
+  enabled: false
 
 logging:
   level:
