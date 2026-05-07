@@ -46,7 +46,7 @@ def query():
 
     # Step 3: Ask AI using context
     prompt = f"""
-Answer the question using the context below.
+You must answer using ONLY the provided context.
 
 Context:
 {context}
@@ -54,10 +54,13 @@ Context:
 Question:
 {question}
 
-Rules:
-- Answer directly (no role phrases like "as an assistant")
-- Be clear and concise
-- Use only the given context
+STRICT RULES:
+- Answer in ONLY 1 sentence
+- Do NOT repeat words or phrases
+- Keep it clear and professional
+- Do NOT mention context
+- Do NOT explain anything extra
+- Do NOT add new information
 
 Answer:
 """
