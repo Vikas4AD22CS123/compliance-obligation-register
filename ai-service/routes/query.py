@@ -1,8 +1,14 @@
 from flask import Blueprint, request, jsonify
 from services.groq_client import call_groq
+from flask import Blueprint, request, jsonify
 import chromadb
 
 query_bp = Blueprint("query", __name__)
+
+from services.cache import (
+    get_cached_response,
+    save_to_cache
+)
 
 # Setup ChromaDB client
 client = chromadb.Client(
@@ -26,13 +32,23 @@ if collection.count() == 0:
 
 @query_bp.route("/query", methods=["POST"])
 def query():
+
     data = request.json
     question = data.get("question", "")
 
     if not question:
         return jsonify({"error": "Question is required"}), 400
 
-    # Step 1: Retrieve top 3 relevant docs
+    fresh = data.get("fresh", False)
+
+    # Use cache unless fresh request
+    if not fresh:
+        cached = get_cached_response(question)
+
+        if cached:
+            return jsonify(cached)
+
+    # Retrieve top 3 docs
     results = collection.query(
         query_texts=[question],
         n_results=3
@@ -41,12 +57,11 @@ def query():
     docs = results["documents"][0]
     ids = results["ids"][0]
 
-    # Step 2: Build context
+    # Build context
     context = "\n".join(docs)
 
-    # Step 3: Ask AI using context
     prompt = f"""
-You must answer using ONLY the provided context.
+Answer ONLY using the provided context.
 
 Context:
 {context}
@@ -54,21 +69,22 @@ Context:
 Question:
 {question}
 
-STRICT RULES:
-- Answer in ONLY 1 sentence
-- Do NOT repeat words or phrases
-- Keep it clear and professional
-- Do NOT mention context
-- Do NOT explain anything extra
-- Do NOT add new information
+Rules:
+- Keep answer short and direct
+- Do not add extra explanations
+- Do not invent information
+- Use only the context
 
 Answer:
 """
 
     answer = call_groq(prompt)
 
-    # Step 4: Return response
-    return jsonify({
-    "answer": answer,
-    "sources": list(ids)
-})
+    response_data = {
+        "answer": answer,
+        "sources": list(ids)
+    }
+
+    save_to_cache(question, response_data)
+
+    return jsonify(response_data)
