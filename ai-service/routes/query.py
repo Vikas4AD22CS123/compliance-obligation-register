@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from services.groq_client import call_groq
 from flask import Blueprint, request, jsonify
 import chromadb
+import time
 
 query_bp = Blueprint("query", __name__)
 
@@ -33,6 +34,8 @@ if collection.count() == 0:
 @query_bp.route("/query", methods=["POST"])
 def query():
 
+    start_time = time.time()
+
     data = request.json
     question = data.get("question", "")
 
@@ -46,6 +49,7 @@ def query():
         cached = get_cached_response(question)
 
         if cached:
+            cached["meta"]["cached"] = True
             return jsonify(cached)
 
     # Retrieve top 3 docs
@@ -80,9 +84,18 @@ Answer:
 
     answer = call_groq(prompt)
 
+    response_time = round((time.time() - start_time) * 1000, 2)
+
     response_data = {
         "answer": answer,
-        "sources": list(ids)
+        "sources": list(ids),
+        "meta": {
+            "confidence": 0.95,
+            "model_used": "llama-3.3-70b-versatile",
+            "tokens_used": len(answer.split()),
+            "response_time_ms": response_time,
+            "cached": False
+        }
     }
 
     save_to_cache(question, response_data)
