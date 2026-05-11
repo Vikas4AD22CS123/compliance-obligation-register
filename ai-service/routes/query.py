@@ -75,7 +75,8 @@ Question:
 {question}
 
 Rules:
-- Keep answer short and direct
+- Keep answer short but meaningful
+- Mention the actual compliance topic
 - Do not add extra explanations
 - Do not invent information
 - Use only the context
