@@ -46,6 +46,7 @@ def query():
 
     # Use cache unless fresh request
     if not fresh:
+
         cached = get_cached_response(question)
 
         if cached:
@@ -82,7 +83,26 @@ Rules:
 Answer:
 """
 
-    answer = call_groq(prompt)
+    is_fallback = False
+
+    try:
+
+        answer = call_groq(prompt)
+
+        if not answer:
+            raise Exception("Empty AI response")
+
+    except Exception as e:
+
+        print("Groq Error:", str(e))
+
+        answer = (
+            "The requested compliance information "
+            "is temporarily unavailable. "
+            "Please try again later."
+        )
+
+        is_fallback = True
 
     response_time = round((time.time() - start_time) * 1000, 2)
 
@@ -94,7 +114,8 @@ Answer:
             "model_used": "llama-3.3-70b-versatile",
             "tokens_used": len(answer.split()),
             "response_time_ms": response_time,
-            "cached": False
+            "cached": False,
+            "is_fallback": is_fallback
         }
     }
 
