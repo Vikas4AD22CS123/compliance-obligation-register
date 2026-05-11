@@ -96,13 +96,11 @@ Answer:
 
         print("Groq Error:", str(e))
 
-        answer = (
-            "The requested compliance information "
-            "is temporarily unavailable. "
-            "Please try again later."
-        )
-
-        is_fallback = True
+        answer = "The requested compliance information "
+        "is temporarily unavailable. "
+        "Please try again later."
+        
+    is_fallback = True
 
     response_time = round((time.time() - start_time) * 1000, 2)
 
